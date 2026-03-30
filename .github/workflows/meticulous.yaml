@@ -34,6 +34,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # --- ADD THIS STEP BELOW ---
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9 # or your specific pnpm version
+
       - name: Use Node.js LTS
         uses: actions/setup-node@v4
         with:
