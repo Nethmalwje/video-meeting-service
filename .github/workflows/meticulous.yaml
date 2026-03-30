@@ -56,11 +56,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pnpm install --frozen-lockfile
+          npm install --frozen-lockfile
 
       - name: Build project
         run: |
-          pnpm build
+          npm build
 
       - name: Run Meticulous tests
         uses: alwaysmeticulous/report-diffs-action/upload-assets@v1
