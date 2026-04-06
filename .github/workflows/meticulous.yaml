@@ -34,38 +34,32 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --- ADD THIS STEP BELOW ---
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9 # or your specific pnpm version
-
       - name: Use Node.js LTS
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
-          # cache: pnpm
+          node-version: "20"
 
       - name: Cache node_modules
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: node-modules-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             node-modules-${{ runner.os }}
 
       - name: Install dependencies
-        run: |
-          npm install --frozen-lockfile
+        run: npm ci
 
       - name: Build project
-        run: |
-          npm build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_STREAM_API_KEY: ${{ secrets.NEXT_PUBLIC_STREAM_API_KEY }}
+          STREAM_SECRET_KEY: ${{ secrets.STREAM_SECRET_KEY }}
 
       - name: Run Meticulous tests
         uses: alwaysmeticulous/report-diffs-action/upload-assets@v1
         with:
           api-token: ${{ secrets.METICULOUS_API_TOKEN }}
-          # TODO: Update the directory path below to match your app's build output directory
-          # For example, if you're using Vite, this is typically "dist"
-          app-directory: "dist"
+          app-directory: ".next"
